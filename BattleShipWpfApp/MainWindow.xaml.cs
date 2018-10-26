@@ -22,19 +22,23 @@ namespace BattleShipWpfApp
     {
 
         int gridSize = 10;
-        String[,] gridArray;
-        Button[,] buttonArray;
+        String[,] _gridArray;
+        Button[,] _buttonArray;
+        private Random random = new Random();
 
         public MainWindow()
         {
-
             InitializeComponent();
-            gridArray = new String[gridSize, gridSize];
-            buttonArray = new Button[gridSize, gridSize];
+            _gridArray = new String[gridSize, gridSize];
+            _buttonArray = new Button[gridSize, gridSize];
+
+            var randomXIndex = random.Next(0, gridSize-1);
+            var randomYIndex = random.Next(0, gridSize-1);
+            _gridArray[randomXIndex, randomYIndex] = "test";
 
             for (int i = 0; i < gridSize; i++)
             {
-                RowDefinition rd = new RowDefinition();
+                RowDefinition rd = new RowDefinition(); //generating grid/row defitions automatically per grid size
                 rd.Height = new GridLength(50, GridUnitType.Pixel);
                 ViewGrid.RowDefinitions.Add(rd);
 
@@ -43,28 +47,43 @@ namespace BattleShipWpfApp
                 ViewGrid.ColumnDefinitions.Add(cd);
             }
 
-            for (int i = 0; i < gridSize; i++)
+            for (int x = 0; x < gridSize; x++) //>>
             {
-                for (int j = 0; j < gridSize; j++)
+                for (int y = 0; y < gridSize; y++) //VV
                 {
+                    //2x1, 3x1, 4x1, 5x1 no overlap, no diagonal
+
+
                     Button btn = new Button();
-                    btn.Click += gridClicked(i, j);
-                    btn.Content = "knap?";
-                    buttonArray[i, j] = btn;
+                    btn.Click += GridClicked(x, y);
+                    btn.Content = "btn";
+                    _buttonArray[x, y] = btn;
                     btn.Margin = new Thickness(2, 2, 2, 2);
                     ViewGrid.Children.Add(btn);
-                    Grid.SetColumn(btn, i);
-                    Grid.SetRow(btn, j);
-
-
-
+                    Grid.SetColumn(btn, x);
+                    Grid.SetRow(btn, y);
                 }
             }
         }
 
-        private RoutedEventHandler gridClicked(int i, int j)
+        private RoutedEventHandler GridClicked(int x, int y) //click event applied to all buttons via for loop
         {
-            return (btn, e) => buttonArray[i, j].Content = "ok";
+            return (btn, e) =>
+            {
+                RevealAll();
+                _buttonArray[x, y].Content = _gridArray[x, y];
+            };
         }
+
+        public void RevealAll()
+        {
+            for (int x = 0; x < gridSize; x++)
+            {
+                for (int y = 0; y < gridSize; y++)
+                {
+                    _buttonArray[x, y].Content = _gridArray[x, y];
+                }
             }
+        }
+    }
 }
