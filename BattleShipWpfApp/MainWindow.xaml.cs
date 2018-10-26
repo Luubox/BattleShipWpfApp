@@ -31,10 +31,10 @@ namespace BattleShipWpfApp
             InitializeComponent();
             _gridArray = new String[gridSize, gridSize];
             _buttonArray = new Button[gridSize, gridSize];
-
-            var randomXIndex = random.Next(0, gridSize-1);
-            var randomYIndex = random.Next(0, gridSize-1);
-            _gridArray[randomXIndex, randomYIndex] = "test";
+            CreateShip(2);
+            CreateShip(3);
+            CreateShip(4);
+            CreateShip(5);
 
             for (int i = 0; i < gridSize; i++)
             {
@@ -66,12 +66,44 @@ namespace BattleShipWpfApp
             }
         }
 
+        private void CreateShip(int size)
+        {
+            var randomYIndex = random.Next(0, gridSize); //random.Next(min,max) min included, max excluded
+            var randomXIndex = random.Next(0, gridSize);
+            bool direction = random.NextDouble() >= 0.5;
+            List<Point> shipList = new List<Point>();
+
+            //if (shipList.Contains(new Point(randomXIndex,randomYIndex))) //TODO virker ikke
+            //{
+                if ((direction && randomXIndex <= (gridSize - 1) - size) || (!direction && randomYIndex <= (gridSize - 1) - size))
+                {
+                    for (int i = 0; i < size; i++)
+                    {
+                        if (direction) shipList.Add(new Point(randomXIndex + i,randomYIndex));
+                        else shipList.Add(new Point(randomXIndex, randomYIndex + i));
+
+                        //if (direction) _gridArray[randomXIndex + i, randomYIndex] = $"{size}"; //right
+                        //else _gridArray[randomXIndex, randomYIndex + i] = $"{size}"; //down
+                    }
+
+                    foreach (var ship in shipList)
+                    {
+                        int x = Convert.ToInt32(ship.X);
+                        int y = Convert.ToInt32(ship.Y);
+                        _gridArray[x,y] = "Hit";        
+                    }                                   
+                }
+            //}
+            else
+                CreateShip(size);
+        }
+
         private RoutedEventHandler GridClicked(int x, int y) //click event applied to all buttons via for loop
         {
             return (btn, e) =>
             {
                 RevealAll();
-                _buttonArray[x, y].Content = _gridArray[x, y];
+                //_buttonArray[x, y].Content = _gridArray[x, y];
             };
         }
 
