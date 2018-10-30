@@ -20,7 +20,7 @@ namespace BattleShipWpfApp
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        private int _missCounter = 1;
         int gridSize = 10;
         String[,] _gridArray;
         Button[,] _buttonArray;
@@ -31,6 +31,7 @@ namespace BattleShipWpfApp
             InitializeComponent();
             _gridArray = new String[gridSize, gridSize];
             _buttonArray = new Button[gridSize, gridSize];
+
             CreateShip(2);
             CreateShip(3);
             CreateShip(4);
@@ -106,8 +107,15 @@ namespace BattleShipWpfApp
         {
             return (btn, e) =>
             {
-                RevealAll();
-                //_buttonArray[x, y].Content = _gridArray[x, y];
+                //RevealAll();
+
+                _buttonArray[x, y].IsEnabled = false;
+
+                _buttonArray[x, y].Content = _gridArray[x, y];
+                if (_gridArray[x, y] != "Hit")
+                {
+                    ScoreBoard.Text = $"Number of misses: {_missCounter++.ToString()}";
+                }
             };
         }
 

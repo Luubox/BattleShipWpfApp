@@ -11,5 +11,7 @@
             <Grid x:Name="ViewGrid" VerticalAlignment="Center" HorizontalAlignment="Center">
 
             </Grid>
+            
+            <TextBlock Name="ScoreBoard" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         </StackPanel>
 </Window>
