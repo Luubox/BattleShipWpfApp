@@ -31,10 +31,14 @@ namespace BattleShipWpfApp
             InitializeComponent();
             _gridArray = new String[gridSize, gridSize];
             _buttonArray = new Button[gridSize, gridSize];
-            CreateShip(2);
-            CreateShip(3);
-            CreateShip(4);
-            CreateShip(5);
+
+            //MOVED
+            List<Point> shipList = new List<Point>();
+
+            CreateShip(2, shipList);
+            CreateShip(3, shipList);
+            CreateShip(4, shipList);
+            CreateShip(5, shipList);
 
             for (int i = 0; i < gridSize; i++)
             {
@@ -66,40 +70,79 @@ namespace BattleShipWpfApp
             }
         }
 
-        private void CreateShip(int size)
+        private void CreateShip(int size, List<Point> shipList)
         {
             var randomYIndex = random.Next(0, gridSize); //random.Next(min,max) min included, max excluded
             var randomXIndex = random.Next(0, gridSize);
             bool direction = random.NextDouble() >= 0.5;
-            List<Point> shipList = new List<Point>();
-            CheckShip(size, randomYIndex, randomXIndex, direction, shipList);
+
+            //ADDED
+            bool testbool = true;
+
+            CheckShip(size, randomYIndex, randomXIndex, direction, shipList, testbool);
         }
 
-        private void CheckShip(int size, int randomYIndex, int randomXIndex, bool direction, List<Point> shipList)
+        private void CheckShip(int size, int randomYIndex, int randomXIndex, bool direction, List<Point> shipList, bool testbool)
         {
-            if (!shipList.Contains(new Point(randomXIndex, randomYIndex))) //TODO virker ikke
+            if ((direction && randomXIndex <= (gridSize - 1) - size) || (!direction && randomYIndex <= (gridSize - 1) - size))
             {
-                if ((direction && randomXIndex <= (gridSize - 1) - size) || (!direction && randomYIndex <= (gridSize - 1) - size))
+                if (direction)
                 {
                     for (int i = 0; i < size; i++)
                     {
-                        if (direction) shipList.Add(new Point(randomXIndex + i, randomYIndex));
-                        else shipList.Add(new Point(randomXIndex, randomYIndex + i));
-
-                        //if (direction) _gridArray[randomXIndex + i, randomYIndex] = $"{size}"; //right
-                        //else _gridArray[randomXIndex, randomYIndex + i] = $"{size}"; //down
+                        if (shipList.Contains(new Point(randomXIndex + i, randomYIndex)))
+                        {
+                            testbool = false;
+                        }
                     }
 
-                    foreach (var ship in shipList)
+                    if (testbool)
                     {
-                        int x = Convert.ToInt32(ship.X);
-                        int y = Convert.ToInt32(ship.Y);
-                        _gridArray[x, y] = "Hit";
+                        for (int j = 0; j < size; j++)
+                        {
+                            shipList.Add(new Point(randomXIndex + j, randomYIndex));
+                            
+                        }
                     }
+                    else
+                    {
+                        CreateShip(size, shipList);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < size; i++)
+                    {
+                        if (shipList.Contains(new Point(randomXIndex, randomYIndex + i)))
+                        {
+                            testbool = false;
+                            
+                        }
+                    }
+
+                    if (testbool)
+                    {
+                        for (int j = 0; j < size; j++)
+                        {
+                            shipList.Add(new Point(randomXIndex, randomYIndex +j));
+                        }
+                    }
+                    else
+                    {
+                        CreateShip(size, shipList);
+                    }
+                }
+                foreach (var ship in shipList)
+                {
+                    int x = Convert.ToInt32(ship.X);
+                    int y = Convert.ToInt32(ship.Y);
+                    _gridArray[x, y] = size.ToString();
                 }
             }
             else
-                CreateShip(size);
+            {
+                CreateShip(size, shipList);
+            }
         }
 
         private RoutedEventHandler GridClicked(int x, int y) //click event applied to all buttons via for loop
