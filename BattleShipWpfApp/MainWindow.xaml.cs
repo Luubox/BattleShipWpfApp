@@ -72,14 +72,18 @@ namespace BattleShipWpfApp
             var randomXIndex = random.Next(0, gridSize);
             bool direction = random.NextDouble() >= 0.5;
             List<Point> shipList = new List<Point>();
+            CheckShip(size, randomYIndex, randomXIndex, direction, shipList);
+        }
 
-            //if (shipList.Contains(new Point(randomXIndex,randomYIndex))) //TODO virker ikke
-            //{
+        private void CheckShip(int size, int randomYIndex, int randomXIndex, bool direction, List<Point> shipList)
+        {
+            if (!shipList.Contains(new Point(randomXIndex, randomYIndex))) //TODO virker ikke
+            {
                 if ((direction && randomXIndex <= (gridSize - 1) - size) || (!direction && randomYIndex <= (gridSize - 1) - size))
                 {
                     for (int i = 0; i < size; i++)
                     {
-                        if (direction) shipList.Add(new Point(randomXIndex + i,randomYIndex));
+                        if (direction) shipList.Add(new Point(randomXIndex + i, randomYIndex));
                         else shipList.Add(new Point(randomXIndex, randomYIndex + i));
 
                         //if (direction) _gridArray[randomXIndex + i, randomYIndex] = $"{size}"; //right
@@ -90,10 +94,10 @@ namespace BattleShipWpfApp
                     {
                         int x = Convert.ToInt32(ship.X);
                         int y = Convert.ToInt32(ship.Y);
-                        _gridArray[x,y] = "Hit";        
-                    }                                   
+                        _gridArray[x, y] = "Hit";
+                    }
                 }
-            //}
+            }
             else
                 CreateShip(size);
         }
