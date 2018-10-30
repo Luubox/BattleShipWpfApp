@@ -39,6 +39,7 @@ namespace BattleShipWpfApp
 
             CreateShip(2, shipList);
             CreateShip(3, shipList);
+            CreateShip(3, shipList);
             CreateShip(4, shipList);
             CreateShip(5, shipList);
         }
