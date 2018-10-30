@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -150,7 +151,12 @@ namespace BattleShipWpfApp
                 _buttonArray[x, y].Content = _gridArray[x, y];
 
                 if (_gridArray[x, y] != "Hit") ScoreBoard.Text = $"Number of misses: {_missCounter++.ToString()}";
-                else _hitCounter++;
+                else
+                {
+                    SoundPlayer player = new SoundPlayer(@"Sounds\Bomb3.wav");
+                    player.Play();
+                    _hitCounter++;
+                }
 
                 if (_hitCounter == shipList.Count) RevealAll();
             };
